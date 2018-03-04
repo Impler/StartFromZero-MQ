@@ -27,7 +27,7 @@ public class MessageReceiver {
         factory.setHost("localhost");
         try {
             Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
+            final Channel channel = connection.createChannel();
             channel.queueDeclare(queueName, false, false, false, null);
 
             // 在同一时间最多处理一条消息，直到消息确认
