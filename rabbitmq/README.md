@@ -56,3 +56,6 @@ exit
 接收消息，根据路由键转发消息至绑定的队列。
 ### Dirct Exchange
 所有发送到Direct Exchange的消息被转发到routing key中指定的Queue。Direct模式可以使用RabbitMQ自带的Exchange：default Exchange，所以不需要将Exchange进行任何绑定（binding）操作，消息传递时，routing key必须完全匹配才会被队列接收，否则消息会被抛弃。
+
+### Topic Exchange
+所有发送到Topic Exchange的消息被转发到所有关系routing key中指定Topic的Queue上。

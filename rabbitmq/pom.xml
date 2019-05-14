@@ -41,5 +41,6 @@
 		<module>02MessageAcknowledgement</module>
 		<module>10spring-amqp</module>
 		<module>01ProducerConsumer</module>
+		<module>02exchange</module>
 	</modules>
 </project>
