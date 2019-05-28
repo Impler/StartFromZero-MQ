@@ -54,6 +54,14 @@ exit
 
 ## Exchange 交换机
 接收消息，根据路由键转发消息至绑定的队列。
+交换机属性：
+- Name：交换机名称
+- Type：交换机类型 direct topic fanout headers
+- Durability：是否需要持久化
+- Auto Delete：当最后一个绑定到Exchange上的队列删除后，自动删除改Exchange
+- Internal：当前Exchange是否用于RabbitMQ内部使用，默认为false
+- Arguments：扩展参数
+
 ### Dirct Exchange
 所有发送到Direct Exchange的消息被转发到routing key中指定的Queue。Direct模式可以使用RabbitMQ自带的Exchange：default Exchange，所以不需要将Exchange进行任何绑定（binding）操作，消息传递时，routing key必须完全匹配才会被队列接收，否则消息会被抛弃。
 
