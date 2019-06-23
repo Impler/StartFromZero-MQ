@@ -1,6 +1,7 @@
-package com.study.rabbitmq.exchange.direct;
+package com.study.rabbitmq.callback.receive_confirm;
 
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.util.concurrent.TimeoutException;
 public class Producer {
 
   public static void main(String[] args) throws IOException, TimeoutException {
-
     // 创建连接工厂
     ConnectionFactory connFactory = new ConnectionFactory();
     connFactory.setHost("192.168.32.10");
@@ -24,24 +24,29 @@ public class Producer {
     // 创建通道
     Channel channel = connection.createChannel();
 
+    // 指定消息确认模式
+    channel.confirmSelect();
+
     String exchange = "exchange.direct";
-    String exchangeType = "direct";
-    // 声明交换机
-    channel.exchangeDeclare(exchange, exchangeType, true, false, null);
-
-    // 声明队列
-    String queueName = "02exchange.direct.queue";
-    channel.queueDeclare(queueName, true, false, false, null);
-
-    // 绑定队列与交换机
     String routingKey = "02exchange.direct.rk";
-    channel.queueBind(queueName, exchange, routingKey);
 
     String msg = "Hello RabbitMQ";
     channel.basicPublish(exchange, routingKey, null, msg.getBytes());
     System.out.println("发送消息：" + msg);
 
-    channel.close();
-    connection.close();
+    // 添加消息确认监听
+    channel.addConfirmListener(
+        new ConfirmListener() {
+          @Override
+          public void handleAck(long deliveryTag, boolean multiple) throws IOException {
+            System.out.println("ack--" + deliveryTag);
+          }
+
+          @Override
+          public void handleNack(long deliveryTag, boolean multiple) throws IOException {
+            System.out.println("nack--" + deliveryTag);
+          }
+        });
+
   }
 }

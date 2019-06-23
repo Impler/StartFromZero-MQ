@@ -74,3 +74,46 @@ Exchange将routing Key和某topic进行模糊匹配，模糊匹配通配符：
 
 ### Fanout Exchange
 不处理任何routing Key，只需要简单的将队列绑定到交换机上。发送到交换机的消息都会被转发到与该交换机绑定的所有队列上。转发消息最快。
+
+## Message 消息
+Message的基本属性：  
+- Delivery mode: 是否持久化，1：非持久化，2：持久化
+- Headers：Map结构，存放任意自定义属性.
+- Properties: 其他可设置的属性如下：   
+  - content_type ： 消息内容的类型
+  - content_encoding： 消息内容的编码格式
+  - priority： 消息的优先级
+  - correlation_id：关联id
+  - reply_to: 用于指定回复的队列的名称
+  - expiration： 消息的失效时间
+  - message_id： 消息id
+  - timestamp：消息的时间戳
+  - type： 类型
+  - user_id: 用户id
+  - app_id： 应用程序id
+  - cluster_id: 集群id
+- Payload: 消息内容
+
+## 如何保障消息100%投递成功
+- 保障消息的成功发出
+- 保障MQ节点的成功接收
+- 发送端收到MQ节点（Broker）的确认应答
+- 完善的消息补偿机制
+
+### 生产端可靠性投递
+- 消息持久化入库，并打上状态标识
+- 消息的延迟投递，做二次确认，回调检查
+
+### 消费端幂等性保障
+- 唯一ID，数据库主键去重
+- Redis原子性
+
+### 消息确认
+broker接收到生产者消息后，异步发送消息确认消息给生产者
+
+### 消费端限流
+rabbitmq提供qos（Quality of Service 服务质量保障）功能。即在非自动确认消息的前提下，一定数目的消息未被确认前，不再消费新的消息。
+QOS基本属性：
+- prefetchSize：以八位自字节计量，限制broker每次分发的最大数据量，0不限制
+- prefetchCount：限制broker每次分发的最大消息数量，0不限制
+- global：true，应用到整个channel上，false，应用到每个consumer上

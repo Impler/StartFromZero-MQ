@@ -42,5 +42,6 @@
 		<module>10spring-amqp</module>
 		<module>01ProducerConsumer</module>
 		<module>02exchange</module>
-	</modules>
+    <module>03mq-advance</module>
+  </modules>
 </project>
