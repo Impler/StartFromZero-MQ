@@ -66,4 +66,11 @@ exit
 所有发送到Direct Exchange的消息被转发到routing key中指定的Queue。Direct模式可以使用RabbitMQ自带的Exchange：default Exchange，所以不需要将Exchange进行任何绑定（binding）操作，消息传递时，routing key必须完全匹配才会被队列接收，否则消息会被抛弃。
 
 ### Topic Exchange
-所有发送到Topic Exchange的消息被转发到所有关系routing key中指定Topic的Queue上。
+所有发送到Topic Exchange的消息被转发到所有关心routing key中指定Topic的Queue上。
+Exchange将routing Key和某topic进行模糊匹配，模糊匹配通配符：
+- `#` 匹配一个或多个词
+- `*` 匹配不多不少一个词  
+例如：`log.#`能匹配到`log.info.oa`，`log.*`只会匹配到`log.error`
+
+### Fanout Exchange
+不处理任何routing Key，只需要简单的将队列绑定到交换机上。发送到交换机的消息都会被转发到与该交换机绑定的所有队列上。转发消息最快。
