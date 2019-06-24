@@ -117,3 +117,6 @@ QOS基本属性：
 - prefetchSize：以八位自字节计量，限制broker每次分发的最大数据量，0不限制
 - prefetchCount：限制broker每次分发的最大消息数量，0不限制
 - global：true，应用到整个channel上，false，应用到每个consumer上
+
+### 消费端ACK与重回队列
+重回队列：对没有处理成功的消息，把消息重新回递给broker

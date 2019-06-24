@@ -1,11 +1,9 @@
-package com.study.rabbitmq.callback.return_listener;
+package com.study.rabbitmq._01callback.receive_confirm;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.ReturnListener;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -26,32 +24,29 @@ public class Producer {
     // 创建通道
     Channel channel = connection.createChannel();
 
-    String exchange = "exchange.direct";
+    // 指定消息确认模式
+    channel.confirmSelect();
 
-    // 指定路由不了的rk
-    String routingKey = "foo";
+    String exchange = "exchange.direct";
+    String routingKey = "02exchange.direct.rk";
+
     String msg = "Hello RabbitMQ";
-    // mandatory必须指定为true，表示路由不了的消息返回给生产者，否则broker会自动删除该消息
-    boolean mandatory = true;
-    channel.basicPublish(exchange, routingKey, mandatory, null, msg.getBytes());
+    channel.basicPublish(exchange, routingKey, null, msg.getBytes());
     System.out.println("发送消息：" + msg);
 
-    channel.addReturnListener(
-        new ReturnListener() {
+    // 添加消息确认监听
+    channel.addConfirmListener(
+        new ConfirmListener() {
           @Override
-          public void handleReturn(
-              int replyCode,
-              String replyText,
-              String exchange,
-              String routingKey,
-              BasicProperties properties,
-              byte[] body)
-              throws IOException {
+          public void handleAck(long deliveryTag, boolean multiple) throws IOException {
+            System.out.println("ack--" + deliveryTag);
+          }
 
-            System.out.println("replyCode: " + replyCode
-                + ", replyText: " + replyText
-                + ", body: " + new String(body));
+          @Override
+          public void handleNack(long deliveryTag, boolean multiple) throws IOException {
+            System.out.println("nack--" + deliveryTag);
           }
         });
+
   }
 }

@@ -1,4 +1,4 @@
-package com.study.rabbitmq.callback.consumer_interface;
+package com.study.rabbitmq._02current_limit;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
@@ -27,7 +27,10 @@ public class Consumer {
     Channel channel = connection.createChannel();
 
     String queue = "02exchange.direct.queue";
-    channel.basicConsume(queue, new MyConsumer(channel));
+    channel.basicQos(0, 1, false);
+    // 配合autoAck=false才能生效
+    boolean autoAck = false;
+    channel.basicConsume(queue, autoAck, new MyConsumer(channel));
 
   }
 }
