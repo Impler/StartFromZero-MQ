@@ -120,3 +120,18 @@ QOS基本属性：
 
 ### 消费端ACK与重回队列
 重回队列：对没有处理成功的消息，把消息重新回递给broker
+
+### 生存时间 TTL Time to Live
+- 消息的过期时间，在消息发送时可以指定
+- 队列的过期时间，从消息入队开始计算，超时的消息会被自动清除。
+
+### 死信队列 DLX Dead-Letter-Exchange
+当消息在一个队列中变成死信后，它能被重新publish到另一个Exchange，这个Exchange就是死信队列。
+消息变成死信的几种情况：  
+- 消息被拒绝（basic.reject/basic.nack）并且requeue=false
+- 消息TTL过期
+- 队列达到最大长度
+DLX 是一个正常的Exchange，和一般的Exchange没有区别，它能在任何的队列上被指定，实际上就是设置某个队列的属性。
+当这个队列中有死信时，RabbitMQ就会自动的将这个消息重新发送到设置的Exchange上去，进而被路由到另一个队列。
+死信队列的配置
+正常声明Exchange，队列和绑定关系，然后在队列上加一个参数`arguments.put("x-dead-letter-exchange", "死信队列Exchange");`
